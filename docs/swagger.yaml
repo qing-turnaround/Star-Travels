@@ -1,0 +1,354 @@
+basePath: /api/v1/
+definitions:
+  controller.swaggerPostRequest:
+    properties:
+      community_id:
+        description: 社区ID
+        example: 4
+        type: integer
+      content:
+        description: 内容
+        example: 知足，知止，便是福
+        type: string
+      title:
+        description: 标题
+        example: 人生没有什么放不下！
+        type: string
+    required:
+    - community_id
+    - content
+    - title
+    type: object
+  controller.swaggerResponse:
+    properties:
+      code:
+        description: 业务响应状态码
+        type: integer
+      data:
+        description: 返回数据
+      message:
+        description: 提示信息
+        type: string
+    type: object
+  models.ParamCreateCommunity:
+    properties:
+      community_id:
+        example: 1
+        type: integer
+      community_name:
+        example: Go
+        type: string
+      introduction:
+        example: Go语言
+        type: string
+    required:
+    - community_id
+    - community_name
+    - introduction
+    type: object
+  models.ParamLogin:
+    properties:
+      password:
+        description: 用户密码
+        example: "12345"
+        type: string
+      username:
+        description: 用户名字
+        example: 终生让步
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  models.ParamSignUp:
+    properties:
+      password:
+        description: 用户密码
+        example: "12345"
+        type: string
+      re_password:
+        description: 再次确认密码
+        example: "12345"
+        type: string
+      username:
+        description: 用户名字
+        example: 终生让步
+        type: string
+    required:
+    - password
+    - re_password
+    - username
+    type: object
+  models.ParamVote:
+    properties:
+      direction:
+        description: validator binding:oneof 表示该变量的值只能是其中一个（赞同为1，反对为-1）
+        enum:
+        - "0"
+        - "1"
+        - "-1"
+        type: string
+      post_id:
+        description: userId; 从请求中获取
+        type: string
+    required:
+    - post_id
+    type: object
+host: 127.0.01:8080
+info:
+  contact: {}
+  description: 基于gin框架的社区帖子项目
+  termsOfService: http://swagger.io/terms/
+  title: Star-Travels
+  version: "1.0"
+paths:
+  /communities:
+    get:
+      description: 通过该接口获取所有社区
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      summary: 查看社区接口
+      tags:
+      - 社区相关接口
+  /community:
+    get:
+      description: 通过该社区可获取对应名字的社区详细信息
+      parameters:
+      - description: 社区名字
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      summary: 根据社区名字来获取社区详情接口
+      tags:
+      - 社区相关接口
+  /community/create:
+    post:
+      consumes:
+      - application/json
+      description: 可以创建社区（只有管理员身份有权限）
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 创建社区参数
+        in: body
+        name: ParamCreateCommunity
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamCreateCommunity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建社区接口
+      tags:
+      - 社区相关接口
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: 通过该接口进行登录账号，获得 token
+      parameters:
+      - description: 用户登录参数
+        in: body
+        name: ParamLogin
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      summary: 用户登录接口
+      tags:
+      - 用户相关接口
+  /post:
+    get:
+      consumes:
+      - application/json
+      description: 通过urlID参数来获取帖子详情的接口
+      parameters:
+      - description: 查询参数
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取帖子详情的接口
+      tags:
+      - 帖子相关接口
+    post:
+      consumes:
+      - application/json
+      description: 通过该接口来创建帖子
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 创建帖子参数
+        in: body
+        name: Post
+        schema:
+          $ref: '#/definitions/controller.swaggerPostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建帖子的接口
+      tags:
+      - 帖子相关接口
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: 通过url参数获取帖子列表详细信息的接口
+      parameters:
+      - description: 第几页
+        in: query
+        name: page
+        type: integer
+      - description: 每页多少个帖子
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      summary: 获取帖子列表详细信息的接口
+      tags:
+      - 帖子相关接口
+  /posts2:
+    get:
+      consumes:
+      - application/json
+      description: 可根据社区名称（默认为空）和 帖子排序规则来获取帖子（也可以填page和size参数）
+      parameters:
+      - description: 查询的帖子所在的社区名称
+        example: 成长的路口
+        in: query
+        name: community_name
+        type: string
+      - description: 查询的排序规则（根据时间获取投票数进行排序，填time 者 score，默认为time）
+        enum:
+        - time
+        - score
+        example: time
+        in: query
+        name: order
+        type: string
+      - description: 查询第几页，默认第1页
+        example: 1
+        in: query
+        name: page
+        type: integer
+      - description: 每一页帖子的数量，默认每一页10个帖子
+        example: 10
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 升级版获取帖子接口
+      tags:
+      - 帖子相关接口
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: 通过该接口进行注册账号
+      parameters:
+      - description: 用户注册参数
+        in: body
+        name: ParamSignUp
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamSignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      summary: 用户注册接口
+      tags:
+      - 用户相关接口
+  /vote:
+    post:
+      consumes:
+      - application/json
+      description: 可以为帖子进行投票
+      parameters:
+      - description: Bearer 用户令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 投票参数
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamVote'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.swaggerResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 帖子投票接口
+      tags:
+      - 帖子相关接口
+swagger: "2.0"

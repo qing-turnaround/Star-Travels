@@ -1,0 +1,36 @@
+name: "Star Travels"
+mode: "dev"
+version: "v1.1"
+port: 8080
+start_time: "2022-01-01 00:00:00"
+machine_id: 1
+
+auth:
+  jwt_expire: 240 # token过期时间为 jwt_expire hour
+
+log:
+  level: "debug"
+  filename: "web_app.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
+
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "root"
+  dbname: "web_app"
+  max_open_conns: 200
+  max_idle_conns: 50
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  db: 0
+  pool_size: 100
+
+paramPostList: # 关于models params.go 结构体ParamPostList的一些默认值
+  page: 1
+  size: 10

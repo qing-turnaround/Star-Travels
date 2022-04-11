@@ -1412,3 +1412,4 @@
 {"level":"INFO","time":"2022-04-09T00:36:11.448+0800","caller":"logger/logger.go:83","msg":"/api/v1/vote","status":200,"method":"POST","path":"/api/v1/vote","query":"","ip":"127.0.0.1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36","errors":"","cost":0.0057598}
 {"level":"INFO","time":"2022-04-09T00:37:23.104+0800","caller":"Star-Travels-master/main.go:93","msg":"Shutdown Server ..."}
 {"level":"INFO","time":"2022-04-09T00:37:23.108+0800","caller":"Star-Travels-master/main.go:102","msg":"Server exiting"}
+{"level":"DEBUG","time":"2022-04-11T21:52:45.085+0800","caller":"Star-Travels-master/main.go:57","msg":"logger init success"}

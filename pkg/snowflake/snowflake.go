@@ -2,8 +2,9 @@ package snowflake
 
 import (
 	"fmt"
-	"github.com/bwmarrin/snowflake"
 	"time"
+
+	"github.com/bwmarrin/snowflake"
 )
 
 var node *snowflake.Node
@@ -21,6 +22,6 @@ func Init(startTime string, machineID int) (err error) {
 	return
 }
 
-func GetID() int64 {
+func GenID() int64 {
 	return node.Generate().Int64()
 }

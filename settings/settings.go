@@ -2,7 +2,8 @@ package settings
 
 import (
 	"fmt"
-	"github.com/fsnotify/fsnotify" //用于监控的包
+
+	"github.com/fsnotify/fsnotify" // 用于监控的包
 	"github.com/spf13/viper"
 )
 
@@ -18,7 +19,8 @@ type AppConfig struct {
 	MachineID int    `mapstructure:"machine_id"`
 
 	*LogConfig   `mapstructure:"log"` //tag需要与配置文件中的名字对应
-	*MysqlConfig `mapstructure:"mysql"`
+	*MysqlMasterConfig `mapstructure:"mysql_master"`
+	*MysqlSlaveConfig `mapstructure:"mysql_slave"`
 	*RedisConfig `mapstructure:"redis"`
 }
 
@@ -30,12 +32,23 @@ type LogConfig struct {
 	MaxBackups int    `mapstructure:"max_backups"`
 }
 
-type MysqlConfig struct {
+type MysqlMasterConfig struct {
 	Host         string `mapstructure:"host"`
 	Port         int    `mapstructure:"port"`
 	User         string `mapstructure:"user"`
 	Password     string `mapstructure:"password"`
 	Dbname       string `mapstructure:"dbname"`
+	MaxOpenConns int    `mapstructure:"max_open_conns"`
+	MaxIdleConns int    `mapstructure:"max_idle_conns"`
+}
+
+type MysqlSlaveConfig struct {
+	Count        int `mapstructure:"count"`
+	Host         []string `mapstructure:"host"`
+	Port         []int    `mapstructure:"port"`
+	User         []string `mapstructure:"user"`
+	Password     []string `mapstructure:"password"`
+	Dbname       []string `mapstructure:"dbname"`
 	MaxOpenConns int    `mapstructure:"max_open_conns"`
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
 }

@@ -29,7 +29,6 @@ func SetUp(Mode string) *gin.Engine {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-
 	// swagger 文档（http://localhost:8080/swagger/index.html）
 	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 

@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"time"
 	"web_app/dao/mysql"
 	"web_app/models"
 	"web_app/pkg/jwt"
@@ -17,12 +18,14 @@ func SignUp(p *models.ParamSignUp) (err error) {
 		return
 	}
 	// 2.生成用户ID
-	userID := snowflake.GetID()
+	userID := snowflake.GenID()
 	// 构造一个User实例
 	u := &models.User{
-		UserID:   userID,
-		Username: p.Username,
-		Password: p.Password,
+		UserID:     userID,
+		Username:   p.Username,
+		Password:   p.Password,
+		CreateTime: time.Now(),
+		UpdateTime: time.Now(),
 	}
 	// 3.保持进入数据库
 	return mysql.InsertUser(u)

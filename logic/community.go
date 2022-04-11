@@ -1,13 +1,21 @@
 package logic
 
 import (
+	"time"
 	"web_app/dao/mysql"
 	"web_app/models"
 )
 
 // CreateCommunity 创建社区
 func CreateCommunity(p *models.ParamCreateCommunity) error {
-	return mysql.CreateCommunity(p)
+	community := &models.Community{
+		CommunityID:   p.CommunityID,
+		CommunityName: p.CommunityName,
+		Introduction:  p.Introduction,
+		CreateTime:    time.Now(),
+		UpdateTime:    time.Now(),
+	}
+	return mysql.CreateCommunity(community)
 }
 
 func GetCommunityList() ([]*models.Community, error) {

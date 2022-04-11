@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"time"
 	"web_app/dao/mysql"
 	"web_app/dao/redis"
 	"web_app/models"
@@ -10,21 +11,29 @@ import (
 )
 
 // CreatePost 创建帖子
-func CreatePost(p *models.Post) (err error) {
+func CreatePost(p *models.ParamPost, userID int64) (err error) {
 	// 先校验 community_id的正确性
 	_, err = mysql.GetCommunityDetailByID(p.CommunityID)
-	if err !=  nil {
+	if err != nil {
 		zap.L().Error("mysql.GetCommunityDetailByID error: ", zap.Error(err))
 		return
 	}
-	// 1. 生成post id
-	p.PostID = snowflake.GetID()
+	post := &models.Post{
+		PostID:      snowflake.GenID(),
+		AuthorID:    userID,
+		CommunityID: p.CommunityID,
+		Title:       p.Content,
+		Content:     p.Content,
+		CreateTime:  time.Now(),
+		UpdateTime:  time.Now(),
+	}
+
 	// 2. 保存到 mysql 数据库
-	if err = mysql.CreatePost(p); err != nil {
+	if err = mysql.CreatePost(post); err != nil {
 		return
 	}
 	// 3. 在redis中创建 Key
-	err = redis.CreatePost(p.PostID, mysql.GetCommunityNameByID(p.CommunityID))
+	err = redis.CreatePost(post.PostID, mysql.GetCommunityNameByID(post.CommunityID))
 	return
 }
 

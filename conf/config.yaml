@@ -15,13 +15,35 @@ log:
   max_age: 30
   max_backups: 7
 
-mysql:
+# 主节点配置（复制写操作）
+mysql_master:
   host: "127.0.0.1"
   port: 3306
   user: "root"
   password: "root"
   dbname: "web_app"
   max_open_conns: 200
+  max_idle_conns: 50
+
+# 从节点配置
+master_slave:
+  count: 2   # 从节点个数
+  host:        # 可填多个从节点的host
+    - "127.0.0.1"
+    - "127.0.0.1"
+  port:
+    - 3306
+    - 3306
+  user:
+    - "root"
+    - "root"
+  password:
+    - "root"
+    - "root"
+  dbname:
+    - "web_app"
+    - "web_app"
+  max_open_conns: 200 # 为了简便这个保持一直
   max_idle_conns: 50
 
 redis:

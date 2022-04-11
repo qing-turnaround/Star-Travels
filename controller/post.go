@@ -17,28 +17,27 @@ import (
 // @Accept       application/json
 // @Produce      application/json
 // @Param        Authorization  header  string       true  "Bearer 用户令牌"
-// @Param        Post         body  swaggerPostRequest  false  "创建帖子参数"
+// @Param        Post         body  models.ParamPost  false  "创建帖子参数"
 // @Security     ApiKeyAuth
 // @Success      200  {object}   swaggerResponse "成功"
 // @Router       /post [post]
 func CreatePostHandler(c *gin.Context) {
 	// 1. 获取参数和参数校验
-	p := new(models.Post)
+	p := &models.ParamPost{}
 	if err := c.ShouldBindJSON(p); err != nil {
 		zap.L().Error("c.shouldBindJSON failed:", zap.Error(err))
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
 	// 从c 中取得请求用户的ID
-	useID, err := GetCurrentUser(c)
+	userID, err := GetCurrentUser(c)
 	if err != nil {
 		zap.L().Error("controller.CreatePost.GetCurrentUser failed:", zap.Error(err))
 		ResponseError(c, CodeNeedLogin)
 		return
 	}
-	p.AuthorID = useID
 	// 2. 创建帖子
-	if err := logic.CreatePost(p); err != nil {
+	if err := logic.CreatePost(p, userID); err != nil {
 		zap.L().Error("logic.CreatePost failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return
@@ -119,9 +118,9 @@ func GetPostListDetailHandler(c *gin.Context) {
 func GetPostListDetailHandler2(c *gin.Context) {
 	// 1. 获取参数（从url中获取参数）/api/v1/posts2?page=1&size=10&order=time
 	p := &models.ParamPostList{
-		Page:  viper.GetInt64("paramPostList.page"), // 默认参数第一页
-		Size:  viper.GetInt64("paramPostList.size"), // 默认每一页10个帖子
-		Order: models.OrderTime,                     // 默认按时间排序
+		Page:          viper.GetInt64("paramPostList.page"), // 默认参数第一页
+		Size:          viper.GetInt64("paramPostList.size"), // 默认每一页10个帖子
+		Order:         models.OrderTime,                     // 默认按时间排序
 		CommunityName: "",
 	}
 	if err := c.ShouldBindQuery(p); err != nil {

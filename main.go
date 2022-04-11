@@ -56,7 +56,7 @@ func main() {
 	defer zap.L().Sync()
 	zap.L().Debug("logger init success")
 	// 3. 初始化Mysql
-	if err := mysql.Init(settings.Conf.MysqlConfig); err != nil {
+	if err := mysql.Init(settings.Conf.MysqlMasterConfig, settings.Conf.MysqlSlaveConfig); err != nil {
 		fmt.Printf("init mysql failed: %v\n", err)
 		return
 	}

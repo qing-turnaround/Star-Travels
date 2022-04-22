@@ -5,7 +5,7 @@ build:
 
 .PHONY: dockerBuild
 dockerBuild:
-	docker build -t zhugeqing/star-travels:latest .
+	docker build -t zhugeqing/star-travels:latest dockerfile
 
 .PHONY: dockerRun
 dockerRun:

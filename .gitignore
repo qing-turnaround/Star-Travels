@@ -1,2 +1,4 @@
 .idea
+*.log
 web_app.log
+*.exe

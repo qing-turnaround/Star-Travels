@@ -1543,3 +1543,10 @@
 {"level":"INFO","time":"2022-04-22T17:51:12.284+0800","caller":"logger/logger.go:83","msg":"/api/v1/post","status":200,"method":"POST","path":"/api/v1/post","query":"","ip":"::1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36","errors":"","cost":0.1780238}
 {"level":"INFO","time":"2022-04-22T18:37:58.327+0800","caller":"Star-Travels-master/main.go:96","msg":"Shutdown Server ..."}
 {"level":"INFO","time":"2022-04-22T18:37:58.354+0800","caller":"Star-Travels-master/main.go:105","msg":"Server exiting"}
+{"level":"DEBUG","time":"2022-04-22T22:09:09.119+0800","caller":"Star-Travels-master/main.go:58","msg":"logger init success"}
+{"level":"INFO","time":"2022-04-22T22:09:30.995+0800","caller":"redis/consistent_hash.go:138","msg":"数据迁移成功！"}
+{"level":"INFO","time":"2022-04-22T22:09:31.585+0800","caller":"redis/consistent_hash.go:138","msg":"数据迁移成功！"}
+{"level":"INFO","time":"2022-04-22T22:09:35.092+0800","caller":"redis/consistent_hash.go:138","msg":"数据迁移成功！"}
+{"level":"INFO","time":"2022-04-22T22:09:36.306+0800","caller":"redis/consistent_hash.go:138","msg":"数据迁移成功！"}
+{"level":"INFO","time":"2022-04-22T22:09:59.109+0800","caller":"Star-Travels-master/main.go:96","msg":"Shutdown Server ..."}
+{"level":"INFO","time":"2022-04-22T22:09:59.113+0800","caller":"Star-Travels-master/main.go:105","msg":"Server exiting"}

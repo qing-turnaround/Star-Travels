@@ -9,5 +9,5 @@ dockerBuild:
 
 .PHONY: dockerRun
 dockerRun:
-	docker run -d --name web_app --net host -v ${PWD}:/ zhugeqing/star-travels:latest
+	docker run -d --name web_app --net host -v ${PWD}:/app/ zhugeqing/star-travels:latest
 

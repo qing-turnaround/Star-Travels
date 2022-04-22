@@ -7,15 +7,7 @@ build:
 dockerBuild:
 	docker build -t zhugeqing/star-travels:latest .
 
-
-
 .PHONY: dockerRun
 dockerRun:
 	docker run -d --net host -v ./conf/config.yaml:/app/conf/config.yaml zhugeqing/star-travels:latest
 
-.PHONY: test
-test:
-	go test -v ./... -cover
-
-.PHONY: docker
-docker:

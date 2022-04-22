@@ -28,7 +28,7 @@ func CheckUserExist(userName string) error {
 // Login 用户登录与数据库中的数据比较
 func Login(user *models.User) (err error) {
 	var originPassword = user.Password // 记录没有进行加密的密码
-	err = randomGetSlave().Where("user_name = ?", user.Username).Find(user).Error
+	err = randomGetSlave().Where("user_name = ?", user.UserName).Find(user).Error
 	if user.Password != encryptPassword(originPassword) { // 比较数据库里的密码 和 加密用户输入的密码是否一致
 		return ErrorInvalidPassword
 	}
@@ -52,8 +52,6 @@ func GetUserByID(userID int64) (user *models.User, err error) {
 	return
 }
 
-
-
 /* 写操作 */
 
 // InsertUser 插入用户到数据库中
@@ -76,7 +74,7 @@ func encryptPassword(password string) string {
 // UpdateToken 更新用户的token值（限制同一时间只有一台设备登录）
 func UpdateToken(username, token string) error {
 	zap.L().Info("token length is", zap.Int("len", len(token)))
-	err := master.Model(models.User{}).Where("username = ?", username).
+	err := master.Model(models.User{}).Where("user_name = ?", username).
 		UpdateColumn("token", token).Error
 	return err
 }

@@ -9,14 +9,14 @@ const (
 
 // ParamSignUp 注册
 type ParamSignUp struct {
-	Username   string `json:"username" binding:"required" example:"终生让步"`                      // 用户名字
+	UserName   string `json:"username" binding:"required" example:"终生让步"`                      // 用户名字
 	Password   string `json:"password" binding:"required" example:"12345"`                     // 用户密码
 	RePassword string `json:"re_password" binding:"required,eqfield=Password" example:"12345"` // 再次确认密码
 }
 
 // ParamLogin 登录
 type ParamLogin struct {
-	Username string `json:"username" binding:"required" example:"终生让步"`  // 用户名字
+	UserName string `json:"username" binding:"required" example:"终生让步"`  // 用户名字
 	Password string `json:"password" binding:"required" example:"12345"` // 用户密码
 }
 

@@ -11,7 +11,7 @@ import (
 // SignUp 注册逻辑处理函数
 func SignUp(p *models.ParamSignUp) (err error) {
 	// 1.判断用户是否存在
-	if err = mysql.CheckUserExist(p.Username); err != nil {
+	if err = mysql.CheckUserExist(p.UserName); err != nil {
 		return
 	}
 	if err != nil {
@@ -22,7 +22,7 @@ func SignUp(p *models.ParamSignUp) (err error) {
 	// 构造一个User实例
 	u := &models.User{
 		UserID:     userID,
-		Username:   p.Username,
+		UserName:   p.UserName,
 		Password:   p.Password,
 		CreateTime: time.Now(),
 		UpdateTime: time.Now(),
@@ -35,7 +35,7 @@ func SignUp(p *models.ParamSignUp) (err error) {
 func Login(p *models.ParamLogin) (user *models.User, err error) {
 	// 构造一个User实例
 	user = &models.User{
-		Username: p.Username,
+		UserName: p.UserName,
 		Password: p.Password,
 	}
 
@@ -44,7 +44,7 @@ func Login(p *models.ParamLogin) (user *models.User, err error) {
 	}
 
 	// 生成JWT（json web token）
-	token, err := jwt.GenToken(user.UserID, user.Username)
+	token, err := jwt.GenToken(user.UserID, user.UserName)
 	if err != nil {
 		return nil, err
 	}

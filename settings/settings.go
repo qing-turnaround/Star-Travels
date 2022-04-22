@@ -3,7 +3,6 @@ package settings
 import (
 	"fmt"
 
-	"github.com/fsnotify/fsnotify" // 用于监控的包
 	"github.com/spf13/viper"
 )
 
@@ -54,11 +53,16 @@ type MysqlSlaveConfig struct {
 }
 
 type RedisConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
+	Sentinels []string `mapstructure:"sentinels"`
 	Password string `mapstructure:"password"`
-	DB       int    `mapstructure:"db"`
-	PoolSize int    `mapstructure:"pool_size"`
+	Masters  RedisMaster `mapstructure:"masters"`
+	Replicas int `mapstructure:"replicas"`
+}
+
+type RedisMaster struct {
+	MasterName []string `mapstructure:"master_name"`
+	Passwords []string `mapstructure:"passwords"`
+	Counts int `mapstructure:"counts"`
 }
 
 func Init(configFile string) (err error) {
@@ -78,13 +82,7 @@ func Init(configFile string) (err error) {
 	if err := viper.Unmarshal(Conf); err != nil {
 		fmt.Printf("viper.Unmarshal failed: %v\n", err)
 	}
-	viper.WatchConfig() //实时监控配置文件
-	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("配置文件修改...")
-		//当配置文件信息发生变化 就修改 Conf 变量
-		if err := viper.Unmarshal(Conf); err != nil {
-			fmt.Printf("viper.Unmarshal failed: %v\n", err)
-		}
-	})
+
 	return
 }
+

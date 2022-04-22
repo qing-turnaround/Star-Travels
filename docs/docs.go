@@ -219,7 +219,7 @@ var doc = `{
                         "name": "Post",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/controller.swaggerPostRequest"
+                            "$ref": "#/definitions/models.ParamPost"
                         }
                     }
                 ],
@@ -414,31 +414,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "controller.swaggerPostRequest": {
-            "type": "object",
-            "required": [
-                "community_id",
-                "content",
-                "title"
-            ],
-            "properties": {
-                "community_id": {
-                    "description": "社区ID",
-                    "type": "integer",
-                    "example": 4
-                },
-                "content": {
-                    "description": "内容",
-                    "type": "string",
-                    "example": "知足，知止，便是福"
-                },
-                "title": {
-                    "description": "标题",
-                    "type": "string",
-                    "example": "人生没有什么放不下！"
-                }
-            }
-        },
         "controller.swaggerResponse": {
             "type": "object",
             "properties": {
@@ -493,6 +468,31 @@ var doc = `{
                     "description": "用户名字",
                     "type": "string",
                     "example": "终生让步"
+                }
+            }
+        },
+        "models.ParamPost": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "community_id": {
+                    "description": "社区ID",
+                    "type": "integer",
+                    "example": 4
+                },
+                "content": {
+                    "description": "内容",
+                    "type": "string",
+                    "example": "知足，知止，便是福"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string",
+                    "example": "人生没有什么放不下！"
                 }
             }
         },
@@ -557,7 +557,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "127.0.01:8080",
+	Host:        "localhost:8080",
 	BasePath:    "/api/v1/",
 	Schemes:     []string{},
 	Title:       "Star-Travels",

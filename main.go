@@ -17,6 +17,7 @@ import (
 	"web_app/pkg/snowflake"
 	"web_app/routes"
 	"web_app/settings"
+	"web_app/viper"
 
 	"go.uber.org/zap"
 )
@@ -25,7 +26,7 @@ import (
 // @version         1.0
 // @description     基于gin框架的社区帖子项目
 // @termsOfService  http://swagger.io/terms/
-// @host      127.0.01:8080
+// @host      localhost:8080
 // @BasePath  /api/v1/
 
 func main() {
@@ -67,6 +68,8 @@ func main() {
 		return
 	}
 	defer redis.Close()
+	// viper 热加载
+	viper.Watch()
 	// 5. 注册路由
 	r := routes.SetUp(settings.Conf.Mode)
 	// 6.启动服务（优雅挂机）

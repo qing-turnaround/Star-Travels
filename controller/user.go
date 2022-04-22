@@ -86,7 +86,7 @@ func LoginHandler(c *gin.Context) {
 	// 2.业务处理
 	user, err := logic.Login(p)
 	if err != nil {
-		zap.L().Error("logic.Login failed", zap.String("username:", p.Username), zap.Error(err))
+		zap.L().Error("logic.Login failed", zap.String("username:", p.UserName), zap.Error(err))
 		if errors.Is(err, mysql.ErrorUserNotExist) {
 			ResponseError(c, CodeUserNotExist)
 		} else if errors.Is(err, mysql.ErrorInvalidPassword) {
@@ -97,7 +97,7 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 修改数据库中token的值，便于限制同一时间只能有一台设备登录
-	if err := mysql.UpdateToken(p.Username, user.Token); err != nil {
+	if err := mysql.UpdateToken(p.UserName, user.Token); err != nil {
 		zap.L().Error("alter token failed", zap.Error(err))
 		return
 	}
@@ -106,7 +106,7 @@ func LoginHandler(c *gin.Context) {
 	//ResponseWithMsg(c, CodeSuccess, token)
 	ResponseSuccess(c, gin.H{
 		"user_id":  fmt.Sprintf("%d", user.UserID),
-		"username": user.Username,
+		"user_name": user.UserName,
 		"token":    user.Token,
 	})
 }

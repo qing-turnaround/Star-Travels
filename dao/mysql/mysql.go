@@ -18,7 +18,7 @@ var slave []*gorm.DB
 // Init 定义一个初始化数据库的函数
 func Init(masterCfg *settings.MysqlMasterConfig, slaveCfg *settings.MysqlSlaveConfig) (err error) {
 	// DSN:Data Source Name
-	//DSN格式为：[username[:password]@][protocol[(host:port)]]/dbname[?param1=value1&...&paramN=valueN]
+	//DSN格式为：[user_name[:password]@][protocol[(host:port)]]/dbname[?param1=value1&...&paramN=valueN]
 
 	// 配置主节点
 	masterDsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true&loc=Local",
@@ -54,6 +54,8 @@ func Init(masterCfg *settings.MysqlMasterConfig, slaveCfg *settings.MysqlSlaveCo
 				zap.String("slaveNode Dsn is", "slaveDsn"))
 			return err
 		}
+		// 单数，表名不加s
+		slaveNode.SingularTable(true)
 		// 设置最大空闲连接和最大连接数
 		slaveNode.DB().SetMaxIdleConns(slaveCfg.MaxIdleConns)
 		slaveNode.DB().SetMaxOpenConns(slaveCfg.MaxOpenConns)

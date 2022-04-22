@@ -1,24 +1,5 @@
 basePath: /api/v1/
 definitions:
-  controller.swaggerPostRequest:
-    properties:
-      community_id:
-        description: 社区ID
-        example: 4
-        type: integer
-      content:
-        description: 内容
-        example: 知足，知止，便是福
-        type: string
-      title:
-        description: 标题
-        example: 人生没有什么放不下！
-        type: string
-    required:
-    - community_id
-    - content
-    - title
-    type: object
   controller.swaggerResponse:
     properties:
       code:
@@ -60,6 +41,25 @@ definitions:
     - password
     - username
     type: object
+  models.ParamPost:
+    properties:
+      community_id:
+        description: 社区ID
+        example: 4
+        type: integer
+      content:
+        description: 内容
+        example: 知足，知止，便是福
+        type: string
+      title:
+        description: 标题
+        example: 人生没有什么放不下！
+        type: string
+    required:
+    - community_id
+    - content
+    - title
+    type: object
   models.ParamSignUp:
     properties:
       password:
@@ -94,7 +94,7 @@ definitions:
     required:
     - post_id
     type: object
-host: 127.0.01:8080
+host: localhost:8080
 info:
   contact: {}
   description: 基于gin框架的社区帖子项目
@@ -222,7 +222,7 @@ paths:
         in: body
         name: Post
         schema:
-          $ref: '#/definitions/controller.swaggerPostRequest'
+          $ref: '#/definitions/models.ParamPost'
       produces:
       - application/json
       responses:

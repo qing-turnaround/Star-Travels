@@ -9,6 +9,7 @@ type Post struct {
 	PostID      int64     `json:"post_id,string" gorm:"unique;type:bigint(20) NOT NULL;comment:'帖子id'"`                 // 帖子ID，无须传入
 	AuthorID    int64     `json:"author_id,string" gorm:"index;type:bigint(20) NOT NULL;comment:'作者的用户id'"`             // 作者ID
 	CommunityID int64     `json:"community_id" binding:"required" gorm:"index;type:bigint(20) NOT NULL;comment:'所属社区'"` // 社区ID
+	Votes       int64     `json:"votes" gorm:"type:bigint(20) NOT NULL;comment:'帖子的投票数'"`   // 投票数
 	Status      int32     `json:"status" gorm:"type:tinyint(4) NOT NULL DEFAULT '1';comment:'帖子状态'"`
 	Title       string    `json:"title" binding:"required" gorm:"type:varchar(128) COLLATE utf8mb4_general_ci NOT NULL;comment:'帖子的标题'"`    // 标题
 	Content     string    `json:"content" binding:"required" gorm:"type:varchar(8192) COLLATE utf8mb4_general_ci NOT NULL;comment:'帖子的内容'"` // 内容
@@ -19,7 +20,6 @@ type Post struct {
 // ApiPostDetails 帖子详情接口的结构体
 type ApiPostDetails struct {
 	*Post
-	VoteNum       int64  `json:"vote_num"` // 帖子的投票数量
 	AuthorName    string `json:"author_name" db:"author_name"`
 	CommunityName string `json:"community_name" db:"community_name"`
 }

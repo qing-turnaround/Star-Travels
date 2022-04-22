@@ -28,10 +28,10 @@ v=-1时，有两种情况
 */
 
 func VoteForPost(userID int64, p *models.ParamVote) error {
-	zap.L().Debug("VoteForPost",
+	zap.L().Debug("PostVote",
 		zap.Int64("userID", userID),
 		zap.String("postID", p.PostID),
 		zap.String("direction", p.Direction))
 	d, _ := strconv.ParseFloat(p.Direction, 64)
-	return redis.VoteForPost(strconv.Itoa(int(userID)), p.PostID, d)
+	return redis.PostVote(strconv.Itoa(int(userID)), p.PostID, d)
 }

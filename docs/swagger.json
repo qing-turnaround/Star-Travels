@@ -7,7 +7,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "127.0.01:8080",
+    "host": "localhost:8080",
     "basePath": "/api/v1/",
     "paths": {
         "/communities": {
@@ -205,7 +205,7 @@
                         "name": "Post",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/controller.swaggerPostRequest"
+                            "$ref": "#/definitions/models.ParamPost"
                         }
                     }
                 ],
@@ -400,31 +400,6 @@
         }
     },
     "definitions": {
-        "controller.swaggerPostRequest": {
-            "type": "object",
-            "required": [
-                "community_id",
-                "content",
-                "title"
-            ],
-            "properties": {
-                "community_id": {
-                    "description": "社区ID",
-                    "type": "integer",
-                    "example": 4
-                },
-                "content": {
-                    "description": "内容",
-                    "type": "string",
-                    "example": "知足，知止，便是福"
-                },
-                "title": {
-                    "description": "标题",
-                    "type": "string",
-                    "example": "人生没有什么放不下！"
-                }
-            }
-        },
         "controller.swaggerResponse": {
             "type": "object",
             "properties": {
@@ -479,6 +454,31 @@
                     "description": "用户名字",
                     "type": "string",
                     "example": "终生让步"
+                }
+            }
+        },
+        "models.ParamPost": {
+            "type": "object",
+            "required": [
+                "community_id",
+                "content",
+                "title"
+            ],
+            "properties": {
+                "community_id": {
+                    "description": "社区ID",
+                    "type": "integer",
+                    "example": 4
+                },
+                "content": {
+                    "description": "内容",
+                    "type": "string",
+                    "example": "知足，知止，便是福"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string",
+                    "example": "人生没有什么放不下！"
                 }
             }
         },

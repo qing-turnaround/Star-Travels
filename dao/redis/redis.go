@@ -1,28 +1,44 @@
 package redis
 
 import (
-	"fmt"
-	"github.com/go-redis/redis"
+	"context"
 	"web_app/settings"
+
+	"github.com/go-redis/redis/v8"
 )
 
-var rdb *redis.Client
+var (
+	ctx = context.Background()
+	rb *ConsistentHashBalance
+)
 
 func Init(cfg *settings.RedisConfig) (err error) {
-	//初始化客户端连接
-	rdb = redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%d",
-			cfg.Host,  //viper.GetString("redis.host"),
-			cfg.Port), //viper.GetInt("redis.port")), //redis-serverip地址和端口号
-		Password: cfg.Password, //viper.GetString("redis.password"), //密码设置
-		DB:       cfg.DB,       //viper.GetInt("redis.db"), 		 //选择数据库
-		PoolSize: cfg.PoolSize, //viper.GetInt("redis.poolsize"),    //连接池大小
+	// 初始化一致性hash
+	rb = NewConsistentHashBalance(nil, cfg.Replicas, cfg)
+
+	// 添加一个主sentinel
+	rb.SentinelClient = redis.NewSentinelClient(&redis.Options{
+		Addr: cfg.Sentinels[0], // 随机取一个
+		Password: cfg.Password,
 	})
 
-	_, err = rdb.Ping().Result()
-	return
+	// 测试连接
+	for _, client := range rb.Clients {
+		err = client.Ping(ctx).Err()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func Close() {
-	_ = rdb.Close()
+	for _, client := range rb.Clients {
+		client.Close()
+	}
+}
+
+func Update(conf *settings.RedisConfig) {
+	rb.Update(conf)
 }

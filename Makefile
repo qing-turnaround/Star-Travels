@@ -9,5 +9,5 @@ dockerBuild:
 
 .PHONY: dockerRun
 dockerRun:
-	docker run -d --net host -v ./conf/config.yaml:/app/conf/config.yaml zhugeqing/star-travels:latest
+	docker run -d --net host -v ${PWD}/conf/config.yaml:/app/conf/config.yaml zhugeqing/star-travels:latest
 

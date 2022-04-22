@@ -1,4 +1,5 @@
 FROM busybox
 
 # 运行程序（先提前编译一下 make build）
-ENTRYPOINT web_app
+ENTRYPOINT ["./web_app"]
+

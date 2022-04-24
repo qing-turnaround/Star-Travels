@@ -17,7 +17,7 @@ log:
 
 # 主节点配置（复制写操作）
 mysql_master:
-  host: "42.192.19.149"
+  host: "127.0.0.1"
   port: 3306
   user: "root"
   password: "123456"
@@ -29,11 +29,11 @@ mysql_master:
 mysql_slave:
   count: 2   # 从节点个数
   host:        # 可填多个从节点的host
-    - "175.178.248.84"
-    - "175.178.248.84"
+    - "127.0.0.1"
+    - "127.0.0.1"
   port:
     - 3306
-    - 3306
+    - 3307
   user:
     - "root"
     - "root"
@@ -48,9 +48,9 @@ mysql_slave:
 
 redis:
   sentinels:
-    - "121.36.165.46:8000" # 只需要配置sentinel即可，sentinel来发现master ip
-    - "121.36.165.46:8001"
-    - "121.36.165.46:8002"
+    - "127.0.0.1:8000" # 只需要配置sentinel即可，sentinel来发现master ip
+    - "127.0.0.1:8001"
+    - "127.0.0.1:8002"
 
   password: "123456"
   replicas: 20 # 虚拟节点数

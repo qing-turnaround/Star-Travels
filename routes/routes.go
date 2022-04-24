@@ -29,7 +29,7 @@ func SetUp(Mode string) *gin.Engine {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
 
-	// swagger 文档（http://localhost:8080/swagger/index.html）
+	// swagger 文档（http://localhost:9999/swagger/index.html）
 	r.GET("/swagger/*any", gs.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.Group("/api/v1") // 此后用到v1的，访问路径前面都会有r.Group relativePath

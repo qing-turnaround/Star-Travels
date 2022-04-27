@@ -1,7 +1,7 @@
 name: "Star Travels"
 mode: "dev"
 version: "v1.1"
-port: 8080
+port: 9999
 start_time: "2022-01-01 00:00:00"
 machine_id: 1
 

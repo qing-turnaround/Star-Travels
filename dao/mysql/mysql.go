@@ -19,7 +19,6 @@ var slave []*gorm.DB
 func Init(masterCfg *settings.MysqlMasterConfig, slaveCfg *settings.MysqlSlaveConfig) (err error) {
 	// DSN:Data Source Name
 	//DSN格式为：[user_name[:password]@][protocol[(host:port)]]/dbname[?param1=value1&...&paramN=valueN]
-
 	// 配置主节点
 	masterDsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true&loc=Local",
 		masterCfg.User,

@@ -17,7 +17,7 @@ func CreatePost(p *models.ParamPost, userID int64) (err error) {
 	// 先校验 community_id的正确性
 	communityDetail, err := mysql.GetCommunityDetailByID(p.CommunityID)
 	if err != nil {
-		zap.L().Error("mysql.GetCommunityDetailByID error: ", zap.Error(err))
+		zap.L().Error("mysql.GetCommunityDetailByID error: ", zap.Error(err), zap.String("communityID is", strconv.Itoa(int(p.CommunityID))))
 		return
 	}
 	post := &models.Post{

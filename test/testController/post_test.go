@@ -2,8 +2,6 @@ package controller_test
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -14,6 +12,9 @@ import (
 	"web_app/middlewares"
 	"web_app/pkg/snowflake"
 	"web_app/settings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -24,9 +25,10 @@ var (
 func init() {
 	_ = settings.Init("../test.config.yaml")
 	_ = snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineID)
-	_ = mysql.Init(settings.Conf.MysqlConfig) // 初始化mysql
+	_ = mysql.Init(settings.Conf.MysqlMasterConfig, settings.Conf.MysqlSlaveConfig) // 初始化mysql
 	_ = redis.Init(settings.Conf.RedisConfig) // 初始化redis
-
+	defer mysql.Close()
+	defer redis.Close()
 	r = gin.Default()         // 默认引擎路由
 	gin.SetMode(gin.TestMode) // 设置模式
 	url = "/api/v1/post"      // 访问路径
@@ -51,7 +53,7 @@ func TestCreatePostHandler(t *testing.T) {
 			// 构建一个http请求
 			req := httptest.NewRequest("POST", url, strings.NewReader(tt.testBody)) //这里使用httptest
 			// 设置Token
-			req.Header = map[string][]string{"Authorization": {"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo2NDE4MTk2MDY0MTEyNjQwLCJ1c2VybmFtZSI6IuivuOiRm-mdkiIsImV4cCI6MTY0NDIxNjk2MCwiaXNzIjoi6K-46JGb6Z2SIn0.KtPTxPbE2j5j4X3tqUmTSMOh_Afp5KXk5V5XtCfrjOY"}}
+			req.Header = map[string][]string{"Authorization": {"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo0MjE4NDkyOTEzMTM2ODQ0OCwidXNlcm5hbWUiOiLor7jokZvpnZIiLCJleHAiOjE2NTE5MjAwMTcsImlzcyI6IuivuOiRm-mdkiJ9.MYjHmiEkd6j1o0zVBm4rwJMMK2VSDisc5vDFqoEDkks"}}
 			// mock 一个响应记录器
 			w := httptest.NewRecorder()
 			// 让server端处理mock请求并记录返回的响应内容

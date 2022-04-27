@@ -2,3 +2,6 @@
 *.log
 web_app.log
 *.exe
+/conf
+main.go
+/test

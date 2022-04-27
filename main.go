@@ -26,7 +26,7 @@ import (
 // @version         1.0
 // @description     基于gin框架的社区帖子项目
 // @termsOfService  http://swagger.io/terms/
-// @host      127.0.0.1:9999
+// @host      120.79.17.230:9999
 // @BasePath  /api/v1/
 
 func main() {
@@ -72,7 +72,7 @@ func main() {
 	viper.Watch()
 	// 5. 注册路由
 	r := routes.SetUp(settings.Conf.Mode)
-	// 6.启动服务（优雅挂机）
+	// 6.启动服务（优雅关机）
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", settings.Conf.Port),
 		Handler: r,

@@ -17,7 +17,7 @@ log:
 
 # 主节点配置（复制写操作）
 mysql_master:
-  host: "127.0.0.1"
+  host: "42.192.19.149"
   port: 3306
   user: "root"
   password: "123456"
@@ -29,8 +29,8 @@ mysql_master:
 mysql_slave:
   count: 2   # 从节点个数
   host:        # 可填多个从节点的host
-    - "127.0.0.1"
-    - "127.0.0.1"
+    - "175.178.248.84"
+    - "175.178.248.84"
   port:
     - 3306
     - 3307
@@ -48,20 +48,21 @@ mysql_slave:
 
 redis:
   sentinels:
-    - "127.0.0.1:8000" # 只需要配置sentinel即可，sentinel来发现master ip
-    - "127.0.0.1:8001"
-    - "127.0.0.1:8002"
-
+    - "42.192.19.149:8000" # 只需要配置sentinel即可，sentinel来发现master ip
+    - "42.192.19.149:8001"
+    - "42.192.19.149:8002"
   password: "123456"
   replicas: 20 # 虚拟节点数
   masters:
     master_name:
-      - "redis-master"
+      - "redis-master-1"
       - "redis-master-2"
+      - "redis-master-3"
     passwords:
       - "123456"
       - "123456"
-    counts: 2
+      - "123456"
+    counts: 3
 
 paramPostList: # 关于models params.go 结构体ParamPostList的一些默认值
   page: 1

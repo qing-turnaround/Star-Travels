@@ -7,11 +7,6 @@ import (
 	"strings"
 	"testing"
 	"web_app/controller"
-	"web_app/dao/mysql"
-	"web_app/dao/redis"
-	"web_app/middlewares"
-	"web_app/pkg/snowflake"
-	"web_app/settings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
@@ -21,21 +16,6 @@ var (
 	r   *gin.Engine
 	url string
 )
-
-func init() {
-	_ = settings.Init("../test.config.yaml")
-	_ = snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineID)
-	_ = mysql.Init(settings.Conf.MysqlMasterConfig, settings.Conf.MysqlSlaveConfig) // 初始化mysql
-	_ = redis.Init(settings.Conf.RedisConfig) // 初始化redis
-	defer mysql.Close()
-	defer redis.Close()
-	r = gin.Default()         // 默认引擎路由
-	gin.SetMode(gin.TestMode) // 设置模式
-	url = "/api/v1/post"      // 访问路径
-	v1 := r.Group("/api/v1")
-	v1.Use(middlewares.JWTAuthMiddleware())        // 使用一个中间件
-	v1.POST("/post", controller.CreatePostHandler) // 加一条路由
-}
 
 func TestCreatePostHandler(t *testing.T) {
 	// 定义多个测试用例（定义Body时，采用json格式）

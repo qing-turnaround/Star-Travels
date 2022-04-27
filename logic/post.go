@@ -35,13 +35,13 @@ func CreatePost(p *models.ParamPost, userID int64) (err error) {
 		return
 	}
 	// 3. 保存进 redis(用做缓存)
-	err = redis.CreatePost(post, communityDetail.Name)
+	err = redis.CreatePost(post, communityDetail.CommunityName)
 	return
 }
 
 // GetPostByID 查询帖子通过帖子ID
 func GetPostByID(postID int64) (data *models.ApiPostDetails, err error) {
-	var community *models.CommunityDetail
+	var community *models.Community
 	// 先查询redis缓存，如果没有再查询mysql
 	post,  err := redis.GetPostByID(fmt.Sprint(postID))
 	if err != nil {
@@ -59,7 +59,7 @@ func GetPostByID(postID int64) (data *models.ApiPostDetails, err error) {
 			return
 		}
 		// 写入 redis
-		redis.CreatePost(post, community.Name)
+		redis.CreatePost(post, community.CommunityName)
 	}
 
 	// 根据作者id查询作者信息
@@ -82,7 +82,7 @@ func GetPostByID(postID int64) (data *models.ApiPostDetails, err error) {
 	data = &models.ApiPostDetails{
 		Post:          post,
 		AuthorName:    user.UserName,
-		CommunityName: community.Name,
+		CommunityName: community.CommunityName,
 	}
 	return
 }

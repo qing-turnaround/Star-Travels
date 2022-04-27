@@ -17,10 +17,10 @@ type Community struct {
 	UpdateTime    time.Time `gorm:"type:timestamp;not null;comment:'修改时间'"`
 }
 
-// 在 json tag后面加上string，可以让其传到前端时自动转换成string类型
-type CommunityDetail struct {
-	ID          int64     `json:"id,string" db:"community_id"`
-	Name        string    `json:"name" db:"community_name"`
-	Instruction string    `json:"introduction,omitempty" db:"introduction"` // omitempty表示如果为空，那么json字段就没必要展示出来
-	CreateTime  time.Time `json:"create_time" db:"create_time"`
-}
+// // 在 json tag后面加上string，可以让其传到前端时自动转换成string类型
+// type CommunityDetail struct {
+// 	ID          int64     `json:"id,string" db:"community_id"`
+// 	Name        string    `json:"name" db:"community_name"`
+// 	Instruction string    `json:"introduction,omitempty" db:"introduction"` // omitempty表示如果为空，那么json字段就没必要展示出来
+// 	CreateTime  time.Time `json:"create_time" db:"create_time"`
+// }

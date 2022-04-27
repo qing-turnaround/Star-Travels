@@ -18,8 +18,8 @@ func GetCommunityNameByID(communityID int64) (name string) {
 }
 
 // GetCommunityDetailByName 提供查询社区详情
-func GetCommunityDetailByName(communityName string) (communityDetail *models.CommunityDetail, err error) {
-	communityDetail = new(models.CommunityDetail)
+func GetCommunityDetailByName(communityName string) (communityDetail *models.Community, err error) {
+	communityDetail = new(models.Community)
 	rowsAffected := randomGetSlave().Where("community_name = ?", communityName).Find(communityDetail).RowsAffected
 	if rowsAffected == 0 {
 		err = ErrorInvalidName
@@ -27,8 +27,8 @@ func GetCommunityDetailByName(communityName string) (communityDetail *models.Com
 	return
 }
 
-func GetCommunityDetailByID(communityID int64) (communityDetail *models.CommunityDetail, err error) {
-	communityDetail = new(models.CommunityDetail)
+func GetCommunityDetailByID(communityID int64) (communityDetail *models.Community, err error) {
+	communityDetail = new(models.Community)
 	rowsAffected := randomGetSlave().Where("community_id = ?", communityID).Find(communityDetail).RowsAffected
 	if rowsAffected == 0 {
 		err = ErrorInvalidID

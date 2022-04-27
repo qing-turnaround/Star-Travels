@@ -23,6 +23,6 @@ func GetCommunityList() ([]*models.Community, error) {
 	return mysql.GetCommunityList()
 }
 
-func GetCommunityDetailByName(communityName string) (*models.CommunityDetail, error) {
+func GetCommunityDetailByName(communityName string) (*models.Community, error) {
 	return mysql.GetCommunityDetailByName(communityName)
 }

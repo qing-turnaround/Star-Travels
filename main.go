@@ -26,7 +26,7 @@ import (
 // @version         1.0
 // @description     基于gin框架的社区帖子项目
 // @termsOfService  http://swagger.io/terms/
-// @host      120.79.17.230:9999
+// @host      localhost:8080
 // @BasePath  /api/v1/
 
 func main() {
@@ -95,7 +95,7 @@ func main() {
 	<-quit                                               // 阻塞在此，当接收到上述两种信号时才会往下执行
 	zap.L().Info("Shutdown Server ...")
 	// 创建一个5秒超时的context
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 	defer cancel()
 	// 5秒内优雅关闭服务（将未处理完的请求处理完再关闭服务），超过5秒就超时退出
 	if err := srv.Shutdown(ctx); err != nil {

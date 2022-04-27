@@ -26,7 +26,7 @@ import (
 // @version         1.0
 // @description     基于gin框架的社区帖子项目
 // @termsOfService  http://swagger.io/terms/
-// @host      localhost:8080
+// @host      120.79.17.230:9999
 // @BasePath  /api/v1/
 
 func main() {

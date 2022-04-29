@@ -2,7 +2,6 @@ package routes
 
 import (
 	"net/http"
-	"time"
 	"web_app/controller"
 	_ "web_app/docs"
 	"web_app/logger"
@@ -21,7 +20,7 @@ func SetUp(Mode string) *gin.Engine {
 	}
 	r := gin.New()
 	r.Use(logger.GinLogger(), logger.GinRecovery(true),
-		middlewares.RateLimitMiddleware(time.Microsecond*10, 10)) // 全网站限流
+		middlewares.RateLimitMiddleware(), middlewares.Tracing()) // 全网站限流，链路追踪
 
 	r.LoadHTMLFiles("./templates/index.html")
 	r.Static("/static", "./static")

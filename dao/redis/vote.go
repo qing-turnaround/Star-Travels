@@ -22,9 +22,9 @@ func PostVote(userID, postID string, value float64) error {
 	postKey := KeyPostInfoHashPrefix + postID
 
 	// 获取对应的客户端
-	clientPostScore := rb.Clients[rb.Get(KeyPostScoreZSet)]
-	clientVote := rb.Clients[rb.Get(votedKey)]
-	clientPost := rb.Clients[rb.Get(postKey)]
+	clientPostScore := rb.GetRandomConn(rb.Get(KeyPostScoreZSet))
+	clientVote := rb.GetRandomConn(rb.Get(votedKey))
+	clientPost := rb.GetRandomConn(rb.Get(postKey))
 
 	// 获取用户关于帖子的状态（-1，0，1）
 	ov := clientVote.ZScore(ctx, votedKey, userID).Val() // 获取当前分数

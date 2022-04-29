@@ -10,17 +10,19 @@ import (
 var Conf = new(AppConfig)
 
 type AppConfig struct {
-	Name      string `mapstructure:"name"` //mapstructure：通用structTag
-	Mode      string `mapstructure:"mode"`
-	Version   string `mapstructure:"version"`
-	Port      int    `mapstructure:"port"`
-	StartTime string `mapstructure:"start_time"`
-	MachineID int    `mapstructure:"machine_id"`
-
-	*LogConfig   `mapstructure:"log"` //tag需要与配置文件中的名字对应
+	Name               string               `mapstructure:"name"` //mapstructure：通用structTag
+	Mode               string               `mapstructure:"mode"`
+	Version            string               `mapstructure:"version"`
+	Port               int                  `mapstructure:"port"`
+	StartTime          string               `mapstructure:"start_time"`
+	MachineID          int                  `mapstructure:"machine_id"`
+	FileInterval       int64                `mapstructure:"fill_interval"` // 添加令牌的速度
+	Cap                int64                `mapstructure:"cap"`           // 令牌桶的容量
+	*LogConfig         `mapstructure:"log"` //tag需要与配置文件中的名字对应
 	*MysqlMasterConfig `mapstructure:"mysql_master"`
-	*MysqlSlaveConfig `mapstructure:"mysql_slave"`
-	*RedisConfig `mapstructure:"redis"`
+	*MysqlSlaveConfig  `mapstructure:"mysql_slave"`
+	*RedisConfig       `mapstructure:"redis"`
+	*JaegerConfig `mapstructure:"jaeger"`
 }
 
 type LogConfig struct {
@@ -42,28 +44,37 @@ type MysqlMasterConfig struct {
 }
 
 type MysqlSlaveConfig struct {
-	Count        int `mapstructure:"count"`
+	Count        int      `mapstructure:"count"`
 	Host         []string `mapstructure:"host"`
 	Port         []int    `mapstructure:"port"`
 	User         []string `mapstructure:"user"`
 	Password     []string `mapstructure:"password"`
 	Dbname       []string `mapstructure:"dbname"`
-	MaxOpenConns int    `mapstructure:"max_open_conns"`
-	MaxIdleConns int    `mapstructure:"max_idle_conns"`
+	MaxOpenConns int      `mapstructure:"max_open_conns"`
+	MaxIdleConns int      `mapstructure:"max_idle_conns"`
 }
 
 type RedisConfig struct {
-	Sentinels []string `mapstructure:"sentinels"`
-	Password string `mapstructure:"password"`
-	Masters  RedisMaster `mapstructure:"masters"`
-	Replicas int `mapstructure:"replicas"`
+	Sentinels []string    `mapstructure:"sentinels"`
+	Password  string      `mapstructure:"password"`
+	Masters   RedisMaster `mapstructure:"masters"`
+	Replicas  int         `mapstructure:"replicas"`
+	PoolSize  int         `mapstructure:"pool_size"`
+	MaxOpenConns int    `mapstructure:"max_open_conns"`
 }
 
 type RedisMaster struct {
 	MasterName []string `mapstructure:"master_name"`
-	Passwords []string `mapstructure:"passwords"`
-	Counts int `mapstructure:"counts"`
+	Passwords  []string `mapstructure:"passwords"`
+	Counts     int      `mapstructure:"counts"`
 }
+
+// 链路追踪
+type JaegerConfig struct {
+	ServiceName string `mapstructure:"service_name"`
+	AgentHostPort string `mapstructure:"agent_host_port"`
+}
+
 
 func Init(configFile string) (err error) {
 	viper.SetConfigFile(configFile)
@@ -85,4 +96,3 @@ func Init(configFile string) (err error) {
 
 	return
 }
-

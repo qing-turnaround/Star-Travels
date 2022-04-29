@@ -3,8 +3,6 @@ package redis
 import (
 	"context"
 	"web_app/settings"
-
-	"github.com/go-redis/redis/v8"
 )
 
 var (
@@ -16,27 +14,27 @@ func Init(cfg *settings.RedisConfig) (err error) {
 	// 初始化一致性hash
 	rb = NewConsistentHashBalance(nil, cfg.Replicas, cfg)
 
-	// 添加一个主sentinel
-	rb.SentinelClient = redis.NewSentinelClient(&redis.Options{
-		Addr: cfg.Sentinels[0], // 随机取一个
-		Password: cfg.Password,
-	})
-
 	// 测试连接
-	for _, client := range rb.Clients {
-		err = client.Ping(ctx).Err()
-		if err != nil {
-			return err
+	for _, clients := range rb.Clients {
+		for _, conn := range clients {
+			if err = conn.Ping(ctx).Err(); err != nil {
+				return err
+			}
 		}
 	}
 
-	return nil
+	return
 }
 
+// 关闭实例连接
 func Close() {
-	for _, client := range rb.Clients {
-		client.Close()
+	for _, clients := range rb.Clients {
+		for _, conn := range clients {
+			conn.Close()
+		}
 	}
+
+	rb.SentinelClient.Close()
 }
 
 func Update(conf *settings.RedisConfig) {

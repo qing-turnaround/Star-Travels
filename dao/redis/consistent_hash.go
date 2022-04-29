@@ -2,6 +2,7 @@ package redis
 
 import (
 	"hash/crc32"
+	"math/rand"
 	"regexp"
 	"sort"
 	"strconv"
@@ -34,7 +35,8 @@ type ConsistentHashBalance struct {
 	keys     UInt32Slice       // 已排序的节点hash切片（方便排序查找节点）
 	Hash // 哈希算法
 	HashMap map[uint32]string
-	Clients map[string]*redis.Client
+	Clients map[string][]*redis.Conn // 取出连接
+	MasterClients map[string]*redis.Client // sentinel 连接master，支持更多操作
 	SentinelClient *redis.SentinelClient // 用于查询redis masterIP
 	Password map[string]string // 对应masterName的密码
 }
@@ -46,7 +48,8 @@ func NewConsistentHashBalance(hash Hash, replicas int, cfg *settings.RedisConfig
 		keys: UInt32Slice{},
 		Hash:     hash,
 		HashMap:        make(map[uint32]string),
-		Clients:  make(map[string]*redis.Client),
+		Clients:  make(map[string][]*redis.Conn),
+		MasterClients: make(map[string]*redis.Client),
 		SentinelClient: nil,
 		Password: map[string]string{},
 	}
@@ -63,6 +66,8 @@ func NewConsistentHashBalance(hash Hash, replicas int, cfg *settings.RedisConfig
 			MasterName:       cfg.Masters.MasterName[i],
 			SentinelPassword: cfg.Password,
 			Password:         cfg.Masters.Passwords[i],
+			PoolSize:         cfg.PoolSize,
+			MaxOpenConns: cfg.MaxOpenConns,
 		}
 		c.AddMaster(config)
 	}
@@ -82,11 +87,18 @@ func (c *ConsistentHashBalance) AddMaster(conf *SentinelConfig) (err error) {
 		MasterName:       conf.MasterName,
 		SentinelAddrs:    conf.SentinelAddrs,
 		SentinelPassword: conf.SentinelPassword,
+		PoolSize: conf.PoolSize,
 		Password: conf.Password,
 	})
 
+	var clients []*redis.Conn
+	// 每个服务端 maxOpenConns 个连接
+	for i := 0; i < conf.MaxOpenConns; i++ {
+		clients = append(clients, client.Conn(ctx))
+	}
 	// 将对应的 masterName（因为主从可能切换，但是MasterName一般不会进行改变）与client相关联
-	c.Clients[conf.MasterName] = client
+	c.Clients[conf.MasterName] = clients
+	c.MasterClients[conf.MasterName] = client
 
 	// 结合复制因子计算所有虚拟节点的hash值，并存入m.keys中，同时在m.hashMap中保存哈希值和key的映射
 	for i := 0; i < c.replicas; i++ {
@@ -99,22 +111,22 @@ func (c *ConsistentHashBalance) AddMaster(conf *SentinelConfig) (err error) {
 	return nil
 }
 
-
-
 // 更新节点
 func (c *ConsistentHashBalance) Update(conf *settings.RedisConfig) {
-	newC := NewConsistentHashBalance(nil, conf.Replicas, conf) // 新的 c
+	// 新的 rb
+	newRb := NewConsistentHashBalance(nil, conf.Replicas, conf)
 	// 迁移数据
-	c.Migrate(newC)
+	c.Migrate(newRb)
 	// 给全局变量赋予新值
-	rb = newC
+	rb = newRb
 }
 
 // 迁移数据
 func (c *ConsistentHashBalance) Migrate(newC *ConsistentHashBalance) {
-	for masterName, client := range c.Clients {
+	for masterName, client := range c.MasterClients {
+
 		// 取出所有key,执行keys *
-		keysResult, _ := client.Do(ctx, "keys", "*").StringSlice()
+		keysResult, _ := client.Do(ctx, "key", "*").StringSlice()
 
 		// 流水线
 		pipeline := client.TxPipeline()
@@ -161,6 +173,11 @@ func (c *ConsistentHashBalance) IsEmpty() bool {
 	return len(c.keys) == 0
 }
 
+func (c *ConsistentHashBalance) GetRandomConn(masterName string) *redis.Conn {
+	length := len(c.Clients[masterName])
+	// 随机取出一个连接
+	return c.Clients[masterName][rand.Intn(length)]
+}
 
 type SentinelConfig struct {
 	SentinelAddrs []string
@@ -169,6 +186,8 @@ type SentinelConfig struct {
 	SentinelPassword string
 	// master Password
 	Password string
+	PoolSize int
+	MaxOpenConns int
 }
 
 // // 利用正则表达式从命令 role 结果中获取 master addr 和 port

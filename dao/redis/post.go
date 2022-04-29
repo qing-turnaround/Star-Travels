@@ -10,11 +10,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-
-
-
-
-
 //
 // // GetPostVoteData 根据postID列表来查询对应帖子的投票数
 // func GetPostVoteData(ids []string) (data []int64, err error) {
@@ -81,11 +76,11 @@ func CreatePost(post *models.Post, communityName string) (err error) {
 		"votes":    1,
 	}
 	// 获得对应键的 client
-	clientPost := rb.Clients[rb.Get(postKey)]
-	clientVote:= rb.Clients[rb.Get(votedKey)]
-	clientCommunity := rb.Clients[rb.Get(communityKey)]
-	clientPostScore := rb.Clients[rb.Get(KeyPostScoreZSet)]
-	clientPostTime := rb.Clients[rb.Get(KeyPostTimeZSet)]
+	clientPost := rb.GetRandomConn(rb.Get(postKey))
+	clientVote:= rb.GetRandomConn(rb.Get(votedKey))
+	clientCommunity := rb.GetRandomConn(rb.Get(communityKey))
+	clientPostScore := rb.GetRandomConn(rb.Get(KeyPostScoreZSet))
+	clientPostTime := rb.GetRandomConn(rb.Get(KeyPostTimeZSet))
 
 
 	// 创建帖子
@@ -123,7 +118,7 @@ func GetPostByID(postID string) (data *models.Post, err error) {
 	// post Key
 	postKey := KeyPostInfoHashPrefix + postID
 	// 获取客户端
-	clientPost := rb.Clients[rb.Get(postKey)]
+	clientPost := rb.GetRandomConn(rb.Get(postKey))
 
 	// 获取结果
 	postInfo, err := clientPost.HGetAll(ctx, postKey).Result()
@@ -160,7 +155,7 @@ func GetPostIDsByCommunityID(p *models.ParamPostList) (postIDs []string,err erro
 
 	// 临时 key
 	key := orderKey + communityKey
-	client := rb.Clients[rb.Get(key)]
+	client := rb.GetRandomConn(rb.Get(key))
 	// 检查 key是否存在
 	if client.Exists(ctx, key).Val() < 0 {
 		// key 不存在，创建 key，设置过期时间，得出结果
@@ -190,7 +185,7 @@ func GetPostIDsInOrder(key, order string, page, size int64) ([]string, error) {
 	}
 
 	// 获取客户端
-	clientPostTime := rb.Clients[rb.Get(key)]
+	clientPostTime := rb.GetRandomConn(rb.Get(key))
 	start := (page-1) * size - 1
 	end := start + size -1
 	return clientPostTime.ZRevRange(ctx, key, start, end).Result()

@@ -89,6 +89,8 @@ func GinLogger() gin.HandlerFunc {
 			zap.String("user-agent", c.Request.UserAgent()),
 			zap.String("errors", c.Errors.ByType(gin.ErrorTypePrivate).String()),
 			zap.Duration("cost", cost),
+			zap.String("trace_id", c.GetString("X-Trace-ID")),
+			zap.String("span_id", c.GetString("X-Span-ID")),
 		)
 	}
 }

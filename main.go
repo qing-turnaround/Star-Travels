@@ -15,6 +15,7 @@ import (
 	"web_app/dao/redis"
 	"web_app/logger"
 	"web_app/pkg/snowflake"
+	"web_app/pkg/tracer"
 	"web_app/routes"
 	"web_app/settings"
 	"web_app/viper"
@@ -36,14 +37,21 @@ func main() {
 	flag.StringVar(&configFile, "f", "./conf/config.yaml", "配置文件的路径")
 	//解析命令行参数
 	flag.Parse()
+
 	if err := settings.Init(configFile); err != nil {
 		fmt.Printf("init settings failed: %v\n", err)
 		return
 	}
+
 	if err := snowflake.Init(settings.Conf.StartTime, settings.Conf.MachineID); err != nil {
 		fmt.Printf("init snowflake failed: %v\n", err)
 		return
 	}
+
+	if err := tracer.InitTracer(settings.Conf.JaegerConfig); err != nil {
+		fmt.Printf("init tracer failed: %v\n", err)
+	}
+
 	if err := controller.InitTrans("zh"); err != nil {
 		fmt.Printf("init validator trans failed: %v\n", err)
 		return
@@ -56,22 +64,26 @@ func main() {
 	//把缓存区的日志追加到日志
 	defer zap.L().Sync()
 	zap.L().Debug("logger init success")
+
 	// 3. 初始化Mysql
 	if err := mysql.Init(settings.Conf.MysqlMasterConfig, settings.Conf.MysqlSlaveConfig); err != nil {
 		fmt.Printf("init mysql failed: %v\n", err)
 		return
 	}
 	defer mysql.Close()
+
 	// 4. 初始化Redis
 	if err := redis.Init(settings.Conf.RedisConfig); err != nil {
 		fmt.Printf("init redis failed: %v\n", err)
 		return
 	}
 	defer redis.Close()
+
 	// viper 热加载
 	viper.Watch()
 	// 5. 注册路由
 	r := routes.SetUp(settings.Conf.Mode)
+
 	// 6.启动服务（优雅关机）
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", settings.Conf.Port),

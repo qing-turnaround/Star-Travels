@@ -18,6 +18,7 @@ var (
 )
 
 func TestCreatePostHandler(t *testing.T) {
+	url := "http://120.79.17.230:9999/posts"
 	// 定义多个测试用例（定义Body时，采用json格式）
 	tests := []struct {
 		testName   string             // 测试用例的名字
